@@ -17,19 +17,48 @@ class _NewTransactionState extends State<NewTransaction> {
   DateTime _selectedDate = DateTime(1900);
 
   void _submitData() {
-    final enteredTitle = titleController.text;
-    final enteredAmount = double.parse(amountController.text);
-    if (enteredTitle.isEmpty || enteredAmount < 0) return;
-    widget.addTx(enteredTitle, enteredAmount, _selectedDate);
+    final _enteredTitle = titleController.text;
+    final _enteredAmount = double.parse(amountController.text);
+    if (_enteredTitle.isEmpty ||
+        _enteredAmount < 0 ||
+        _selectedDate == DateTime(1900)) return;
+    widget.addTx(_enteredTitle, _enteredAmount, _selectedDate);
     Navigator.of(context).pop();
   }
 
   void _presentDatePicker() {
+    // showDatePicker(
+    //   context: context,
+    //   initialDate: DateTime.now(),
+    //   firstDate: DateTime(2022),
+    //   lastDate: DateTime.now(),
+    // ).then((pickDate) {
+    //   if (pickDate == DateTime(1900)) {
+    //     return;
+    //   }
+
     showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2022),
       lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.purple, // header background color
+              onPrimary: Colors.white, // header text color
+              onSurface: Colors.black, // body text color
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                primary: Colors.red, // button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     ).then((pickDate) {
       if (pickDate == DateTime(1900)) {
         return;

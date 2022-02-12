@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:personal_expenses/widgets/transaction_list.dart';
 import './widgets/new_transaction.dart';
@@ -17,6 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primaryColor: Colors.purple,
           primarySwatch: Colors.purple,
+          errorColor: Colors.red,
           colorScheme:
               ColorScheme.fromSwatch().copyWith(secondary: Colors.amber),
           fontFamily: 'QuickSand',
@@ -49,23 +49,30 @@ class _MyHomePageState extends State<MyHomePage> {
     //     id: 't1', title: 'new shoes', amount: 67.87, date: DateTime.now())
   ];
 
+  List<Transactions> get _recentTransactions {
+    return _userTransactions
+        .where((tx) =>
+            tx.date.isAfter(DateTime.now().subtract((const Duration(days: 7)))))
+        .toList();
+  }
 
-List<Transactions> get _recentTransactions {
-  return _userTransactions.where((tx) => tx.date.isAfter(
-    DateTime.now().subtract((const Duration(days: 7)
-    )
-    )
-    )).toList();
-}
-  
-  void _addNewTransaction(String txtTitle, double txAmount, DateTime choosenDate) {
+  void _addNewTransaction(
+      String txtTitle, double txAmount, DateTime choosenDate) {
     final newTx = Transactions(
         id: DateTime.now().toString(),
         title: txtTitle,
         amount: txAmount,
-        date: DateTime.now());
+        date: choosenDate);
     setState(() {
       _userTransactions.add(newTx);
+    });
+  }
+
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((tx) {
+        return tx.id == id;
+      });
     });
   }
 
@@ -99,7 +106,7 @@ List<Transactions> get _recentTransactions {
           children: <Widget>[
             // ignore: sized_box_for_whitespace
             Chart(_recentTransactions),
-            TransactionList(_userTransactions)
+            TransactionList(_userTransactions, _deleteTransaction)
           ],
         ),
       ),
