@@ -31,48 +31,21 @@ class TransactionList extends StatelessWidget {
                 )
               ],
             )
-          : ListView(
-              children: transactions.map((tx) {
-                return Card(
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 15),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).primaryColor,
-                            width: 2,
-                          ),
-                        ),
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          '\$${tx.amount.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.purple),
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            tx.title,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            DateFormat.yMMMd().format(tx.date),
-                            style: const TextStyle(color: Colors.grey),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
+          : ListView.builder(
+            itemCount: transactions.length,
+            scrollDirection: Axis.vertical,
+             itemBuilder: (ctx, index) {
+            return Card(
+              elevation: 5,
+              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+              child: ListTile(
+                leading: CircleAvatar(radius: 30, 
+                  child: Padding(child: FittedBox(child: Text(transactions[index].amount.toStringAsFixed(2)),),
+                   padding: const EdgeInsets.all(4),),) ,
+                   title: Text(transactions[index].title, style: Theme.of(ctx).textTheme.headline2),
+                   subtitle: Text(DateFormat.yMMMd().format(transactions[index].date)) ,),
+            );
+          }),
     );
   }
 }

@@ -1,9 +1,9 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:personal_expenses/widgets/transaction_list.dart';
 import './widgets/new_transaction.dart';
 import 'models/transactions.dart';
+import './widgets/charts.dart';
 
 void main() => runApp(MyApp());
 
@@ -49,7 +49,16 @@ class _MyHomePageState extends State<MyHomePage> {
     //     id: 't1', title: 'new shoes', amount: 67.87, date: DateTime.now())
   ];
 
-  void _addNewTransaction(String txtTitle, double txAmount) {
+
+List<Transactions> get _recentTransactions {
+  return _userTransactions.where((tx) => tx.date.isAfter(
+    DateTime.now().subtract((const Duration(days: 7)
+    )
+    )
+    )).toList();
+}
+  
+  void _addNewTransaction(String txtTitle, double txAmount, DateTime choosenDate) {
     final newTx = Transactions(
         id: DateTime.now().toString(),
         title: txtTitle,
@@ -89,15 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             // ignore: sized_box_for_whitespace
-            Container(
-              width: double.infinity,
-              child: const Card(
-                color: Colors.blue,
-                child: Text('Chart!'),
-                elevation: 5,
-              ),
-            ),
-
+            Chart(_recentTransactions),
             TransactionList(_userTransactions)
           ],
         ),
